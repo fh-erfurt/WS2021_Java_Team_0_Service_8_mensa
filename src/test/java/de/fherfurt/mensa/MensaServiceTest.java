@@ -1,17 +1,13 @@
 package de.fherfurt.mensa;
 
 import de.fherfurt.campus.CampusLocationService;
-import de.fherfurt.campus.DevCampusLocationService;
-import de.fherfurt.campus.MensaLocation;
-import de.fherfurt.campus.ProdCampusLocationService;
+import de.fherfurt.campus.transfer.objects.MensaLocation;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MensaServiceTest {
 
