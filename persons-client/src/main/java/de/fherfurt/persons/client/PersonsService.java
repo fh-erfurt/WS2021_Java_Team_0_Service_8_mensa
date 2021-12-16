@@ -1,6 +1,6 @@
-package de.fherfurt.persons;
+package de.fherfurt.persons.client;
 
-import de.fherfurt.persons.transfer.objects.MensaPerson;
+import de.fherfurt.persons.client.transfer.objects.MensaPerson;
 
 import java.util.Optional;
 

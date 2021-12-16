@@ -9,6 +9,8 @@
     <modules>
         <module>mensa-client</module>
         <module>mensa-service</module>
+        <module>persons-client</module>
+        <module>campus-client</module>
     </modules>
 
     <dependencyManagement>

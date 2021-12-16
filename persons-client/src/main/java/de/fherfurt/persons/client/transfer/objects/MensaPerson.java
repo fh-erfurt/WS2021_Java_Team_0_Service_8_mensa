@@ -1,7 +1,7 @@
-package de.fherfurt.persons.transfer.objects;
+package de.fherfurt.persons.client.transfer.objects;
 
 /**
- * Represents the data view of persons for the Module Mensa. It is used to allow the access to data that is used for
+ * Represents the data view of de.fherfurt.persons for the Module Mensa. It is used to allow the access to data that is used for
  * showing comment metadata.
  */
 public class MensaPerson {

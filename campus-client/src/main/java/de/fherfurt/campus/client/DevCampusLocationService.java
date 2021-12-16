@@ -1,7 +1,7 @@
-package de.fherfurt.campus;
+package de.fherfurt.campus.client;
 
-import de.fherfurt.campus.transfer.objects.Address;
-import de.fherfurt.campus.transfer.objects.MensaLocation;
+import de.fherfurt.campus.client.transfer.objects.Address;
+import de.fherfurt.campus.client.transfer.objects.MensaLocation;
 
 import java.util.HashMap;
 import java.util.HashSet;

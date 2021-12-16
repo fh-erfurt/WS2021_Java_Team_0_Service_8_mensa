@@ -1,4 +1,4 @@
-package de.fherfurt.campus.transfer.objects;
+package de.fherfurt.campus.client.transfer.objects;
 
 public class Address {
     private String street;
