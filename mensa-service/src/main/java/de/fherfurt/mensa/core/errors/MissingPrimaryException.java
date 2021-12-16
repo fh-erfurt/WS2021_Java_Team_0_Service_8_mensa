@@ -20,6 +20,6 @@ public class MissingPrimaryException extends RuntimeException {
 
     @Override
     public String getLocalizedMessage() {
-        return "Could not find a primary key on type '" + type + "'." + (Objects.isNull(getMessage())? "": " " + getMessage());
+        return "Could not find a primary key on type '" + type + "'." + (Objects.isNull(getMessage()) ? "" : " " + getMessage());
     }
 }

@@ -1,0 +1,1 @@
+package de.fherfurt.mensa.rating.entity;
