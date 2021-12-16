@@ -3,6 +3,7 @@ package de.fherfurt.mensa.core;
 import de.fherfurt.mensa.core.errors.MissingPrimaryException;
 import de.fherfurt.mensa.core.errors.ToManyPrimaryKeysException;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +13,8 @@ class DatabaseTest {
 
     private final Database database = Database.newInstance();
 
-    @BeforeEach
-    void beforeEach() {
+    @AfterEach
+    void afterEach() {
         database.clear();
     }
 
@@ -121,6 +122,46 @@ class DatabaseTest {
         Assertions.assertThat(database.count(TestEntity.class)).isEqualTo(0);
     }
 
+    @Test
+    void shouldInsertNestedEntitiesViaMapper() {
+        // GIVEN
+        final TestEntityWithNested entity = new TestEntityWithNested(98, new TestEntity(99));
+        database.addInsertMapper(TestEntityWithNested.class, (db, object) -> db.save(object.getNested()));
+
+        // WHEN
+        database.save(entity);
+
+        // THEN
+        Assertions.assertThat(database.count(TestEntity.class)).isOne();
+        Assertions.assertThat(database.count(TestEntityWithNested.class)).isOne();
+
+        Assertions.assertThat(entity.id).isOne();
+        Assertions.assertThat(entity.getNested().id).isOne();
+    }
+
+    @Test
+    void shouldDeleteNestedEntitiesViaMapper() {
+        // GIVEN
+        final TestEntityWithNested entity = new TestEntityWithNested(98, new TestEntity(99));
+        database.addInsertMapper(TestEntityWithNested.class, (db, object) -> db.save(object.getNested()));
+        database.addDeleteMapper(TestEntityWithNested.class, (db, object) -> db.delete(object.getNested()));
+
+        database.save(entity);
+        int testEntityCountBeforeDelete = database.count(TestEntity.class);
+        int testEntityWithNestedCountBeforeDelete = database.count(TestEntityWithNested.class);
+
+        // WHEN
+        database.delete(entity);
+
+        // THEN
+        Assertions.assertThat(database.count(TestEntity.class))
+                .isNotEqualTo(testEntityCountBeforeDelete)
+                .isZero();
+        Assertions.assertThat(database.count(TestEntityWithNested.class))
+                .isNotEqualTo(testEntityWithNestedCountBeforeDelete)
+                .isZero();
+    }
+
     public static class TestEntity {
 
         @Id
@@ -137,22 +178,48 @@ class DatabaseTest {
             return id;
         }
 
+        public void setId(int id) {
+            this.id = id;
+        }
+
         public int getValue() {
             return value;
         }
     }
 
-    public static class TestEntityWithoutPK {
+    public static class TestEntityWithNested {
 
-        private int value;
+        @Id
+        private int id;
 
-        public TestEntityWithoutPK(final int value) {
+        private final int value;
+
+        private final TestEntity nested;
+
+        public TestEntityWithNested(final int value, final TestEntity nested) {
+            this.id = 0;
             this.value = value;
+            this.nested = nested;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public int getValue() {
             return value;
         }
+
+        public TestEntity getNested() {
+            return nested;
+        }
+    }
+
+    public record TestEntityWithoutPK(int value) {
     }
 
     public static class TestEntityWithToManyPK {
@@ -168,12 +235,12 @@ class DatabaseTest {
             this.id2 = id2;
         }
 
-        public int getId1() {
-            return id1;
+        public void setId1(int id1) {
+            this.id1 = id1;
         }
 
-        public int getId2() {
-            return id2;
+        public void setId2(int id2) {
+            this.id2 = id2;
         }
     }
 }
