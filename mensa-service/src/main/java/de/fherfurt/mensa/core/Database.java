@@ -1,11 +1,12 @@
 package de.fherfurt.mensa.core;
 
-import de.fherfurt.mensa.core.errors.MissingPrimaryException;
-import de.fherfurt.mensa.core.errors.PersistenceException;
-import de.fherfurt.mensa.core.errors.ToManyPrimaryKeysException;
+import de.fherfurt.mensa.core.persistence.errors.MissingPrimaryException;
+import de.fherfurt.mensa.core.persistence.errors.PersistenceException;
+import de.fherfurt.mensa.core.persistence.errors.ToManyPrimaryKeysException;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Database {
@@ -83,11 +85,23 @@ public class Database {
         }
     }
 
-    public <T> Optional<T> find(final int id, final Class<T> type) {
+    public <T> Optional<T> findBy(final Class<T> type, final int id) {
         return Optional.ofNullable(cache.get(type.getSimpleName()))
                 .flatMap(target -> target.entries.stream().filter(entity -> Objects.equals(extractPrimaryKeyValue(entity), id))
                         .map(type::cast)
                         .findFirst());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> findBy(final Class<T> type, Predicate<? extends T> predicate) {
+        final CollectionContainer collection = cache.get(type.getSimpleName());
+
+        if (Objects.isNull(collection)) {
+            return Collections.emptyList();
+        }
+
+        return collection.entries.stream().filter((Predicate<? super Object>) predicate)
+                .map(type::cast).collect(Collectors.toList());
     }
 
     private int extractPrimaryKeyValue(final Object entity) {

@@ -1,4 +1,4 @@
-package de.fherfurt.mensa.core.errors;
+package de.fherfurt.mensa.core.persistence.errors;
 
 import java.util.Objects;
 

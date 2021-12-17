@@ -1,4 +1,4 @@
-package de.fherfurt.mensa.core.errors;
+package de.fherfurt.mensa.core.persistence.errors;
 
 public class PersistenceException extends RuntimeException {
     public PersistenceException() {

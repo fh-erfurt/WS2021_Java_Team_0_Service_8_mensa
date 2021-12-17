@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Image extends BaseBusinessEntity {
-
     private String title;
     private String type;
-    private String url;
 }

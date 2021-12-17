@@ -1,1 +1,0 @@
-package de.fherfurt.mensa.rating.boundary;

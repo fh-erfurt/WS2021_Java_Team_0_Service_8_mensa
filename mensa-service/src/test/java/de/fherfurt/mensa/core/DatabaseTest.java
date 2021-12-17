@@ -1,10 +1,9 @@
 package de.fherfurt.mensa.core;
 
-import de.fherfurt.mensa.core.errors.MissingPrimaryException;
-import de.fherfurt.mensa.core.errors.ToManyPrimaryKeysException;
+import de.fherfurt.mensa.core.persistence.errors.MissingPrimaryException;
+import de.fherfurt.mensa.core.persistence.errors.ToManyPrimaryKeysException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -70,7 +69,7 @@ class DatabaseTest {
         database.save(entity3);
 
         // WHEN
-        Optional<TestEntity> result = database.find(2, TestEntity.class);
+        Optional<TestEntity> result = database.findBy(TestEntity.class, 2);
 
         // THEN
         Assertions.assertThat(database.count(TestEntity.class)).isEqualTo(3);
@@ -90,7 +89,7 @@ class DatabaseTest {
         database.save(entity3);
 
         // WHEN
-        Optional<TestEntity> result = database.find(4, TestEntity.class);
+        Optional<TestEntity> result = database.findBy(TestEntity.class, 4);
 
         // THEN
         Assertions.assertThat(database.count(TestEntity.class)).isEqualTo(3);
