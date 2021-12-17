@@ -5,7 +5,6 @@ import de.fherfurt.mensa.rating.boundary.RatingMapper;
 import de.fherfurt.mensa.rating.boundary.transfer.objects.RatingDto;
 import de.fherfurt.mensa.rating.entity.Rating;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
