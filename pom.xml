@@ -56,6 +56,12 @@
                 <artifactId>mapstruct</artifactId>
                 <version>${map.struct.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${map.struct.version}</version>
+            </dependency>
+
 
             <!-- Test dependencies -->
             <dependency>

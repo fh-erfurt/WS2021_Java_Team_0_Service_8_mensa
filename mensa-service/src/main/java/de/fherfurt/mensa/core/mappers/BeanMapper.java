@@ -1,7 +1,9 @@
 package de.fherfurt.mensa.core.mappers;
 
 import de.fherfurt.mensa.core.containers.Tuple3;
+import de.fherfurt.mensa.core.persistence.BaseBusinessEntity;
 import de.fherfurt.mensa.rating.boundary.RatingMapper;
+import org.mapstruct.InheritInverseConfiguration;
 
 /**
  * This interface represents an API definition for bean mappers and a mapper facade at the same time. An example can be found in {@link RatingMapper}.
@@ -10,7 +12,7 @@ import de.fherfurt.mensa.rating.boundary.RatingMapper;
  * @param <E> Generic type of entity
  * @param <D> Generic type of DTO
  */
-public interface BeanMapper<E, D> {
+public interface BeanMapper<E extends BaseBusinessEntity, D> {
 
     /**
      * Maps the given entity to its corresponding DTO.
@@ -26,14 +28,17 @@ public interface BeanMapper<E, D> {
      * @param dto DTO to map
      * @return Resulting entity of the DTO
      */
+    @InheritInverseConfiguration
     E fromDto(final D dto);
 
-    static <E, D> D mapToDto(final E entity) {
+    @Ignore
+    static <E extends BaseBusinessEntity, D> D mapToDto(final E entity) {
         final BeanMapper<E, D> beanMapper = BeanMapperUtils.getMapperBy(entity.getClass(), Tuple3::getV1);
         return beanMapper.toDto(entity);
     }
 
-    static <E, D> E mapFromDto(final D dto) {
+    @Ignore
+    static <E extends BaseBusinessEntity, D> E mapFromDto(final D dto) {
         final BeanMapper<E, D> beanMapper = BeanMapperUtils.getMapperBy(dto.getClass(), Tuple3::getV2);
         return beanMapper.fromDto(dto);
     }
