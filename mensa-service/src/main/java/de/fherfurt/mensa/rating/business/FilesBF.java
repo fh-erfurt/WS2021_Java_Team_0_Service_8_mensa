@@ -1,15 +1,20 @@
 package de.fherfurt.mensa.rating.business;
 
 import de.fherfurt.mensa.rating.entity.FileRepository;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.util.Optional;
 
+@NoArgsConstructor(staticName = "of")
 public class FilesBF {
 
-    private final FileRepository fileRepository = new FileRepository();
+    private final FileRepository fileRepository = FileRepository.of();
 
-    public void save(FileRepository.FileTypes type, String fileName, byte[] content) throws IOException {
+    public void save(FileRepository.FileTypes type, String fileName, byte[] content, boolean newImage) throws IOException {
+        if (!newImage) {
+            fileRepository.delete(type, fileName);
+        }
         fileRepository.save(type, fileName, content);
     }
 

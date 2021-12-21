@@ -1,13 +1,28 @@
-package de.fherfurt.mensa.core;
+package de.fherfurt.mensa.core.persistence;
 
 import de.fherfurt.mensa.core.persistence.errors.MissingPrimaryException;
 import de.fherfurt.mensa.core.persistence.errors.ToManyPrimaryKeysException;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import static de.fherfurt.mensa.TestTags.CORE;
+import static de.fherfurt.mensa.TestTags.UNIT;
+
+@Tags({
+        @Tag(UNIT),
+        @Tag(CORE)
+})
 class DatabaseTest {
 
     private final Database database = Database.newInstance();
@@ -59,7 +74,7 @@ class DatabaseTest {
     }
 
     @Test
-    void shouldFindEntityForId() {
+    void shouldFindEntityById() {
         // GIVEN
         final TestEntity entity1 = new TestEntity(97);
         database.save(entity1);
@@ -74,8 +89,42 @@ class DatabaseTest {
         // THEN
         Assertions.assertThat(database.count(TestEntity.class)).isEqualTo(3);
         Assertions.assertThat(result).isPresent().get()
-                .hasFieldOrPropertyWithValue("value", 98)
-                .hasFieldOrPropertyWithValue("id", 2);
+                .returns(98, TestEntity::getValue)
+                .returns(2, TestEntity::getId);
+    }
+
+    @Test
+    void shouldFindEntityByFilter() {
+        // GIVEN
+        final TestEntityWithNested entity = new TestEntityWithNested(98, new TestEntity(99));
+        database.addInsertMapper(TestEntityWithNested.class, (db, object) -> db.save(object.getNested()));
+        database.save(entity);
+
+        // WHEN
+        final List<TestEntityWithNested> result = database.findBy(TestEntityWithNested.class, withNested -> Objects.equals(withNested.getNested().id, entity.nested.id));
+
+        // THEN
+        Assertions.assertThat(database.count(TestEntityWithNested.class)).isOne();
+        Assertions.assertThat(result).isNotNull().hasSize(1);
+        Assertions.assertThat(result.get(0))
+                .returns(98, TestEntityWithNested::getValue)
+                .returns(1, TestEntityWithNested::getId);
+    }
+
+    @Test
+    void shouldFindEntityByFilterReturnsEmptyListIfNonMatches() {
+        // GIVEN
+        final TestEntityWithNested entity = new TestEntityWithNested(98, new TestEntity(99));
+        database.addInsertMapper(TestEntityWithNested.class, (db, object) -> db.save(object.getNested()));
+        database.save(entity);
+
+        // WHEN
+        final List<TestEntityWithNested> result = database.findBy(TestEntityWithNested.class, withNested -> false);
+
+        // THEN
+        Assertions.assertThat(database.count(TestEntityWithNested.class)).isOne();
+        Assertions.assertThat(database.count(TestEntity.class)).isOne();
+        Assertions.assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
@@ -161,85 +210,37 @@ class DatabaseTest {
                 .isZero();
     }
 
+    @Getter
+    @RequiredArgsConstructor
     public static class TestEntity {
-
         @Id
         private int id;
 
         private final int value;
-
-        public TestEntity(final int value) {
-            this.id = 0;
-            this.value = value;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getValue() {
-            return value;
-        }
     }
 
+    @Getter
+    @Setter
+    @RequiredArgsConstructor
     public static class TestEntityWithNested {
-
         @Id
         private int id;
 
         private final int value;
 
         private final TestEntity nested;
-
-        public TestEntityWithNested(final int value, final TestEntity nested) {
-            this.id = 0;
-            this.value = value;
-            this.nested = nested;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        public TestEntity getNested() {
-            return nested;
-        }
     }
 
     public record TestEntityWithoutPK(int value) {
     }
 
+    @Setter
+    @AllArgsConstructor
     public static class TestEntityWithToManyPK {
-
         @Id
         private int id1;
 
         @Id
         private int id2;
-
-        public TestEntityWithToManyPK(int id1, int id2) {
-            this.id1 = id1;
-            this.id2 = id2;
-        }
-
-        public void setId1(int id1) {
-            this.id1 = id1;
-        }
-
-        public void setId2(int id2) {
-            this.id2 = id2;
-        }
     }
 }

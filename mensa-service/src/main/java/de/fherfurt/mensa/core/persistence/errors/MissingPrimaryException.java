@@ -1,7 +1,10 @@
 package de.fherfurt.mensa.core.persistence.errors;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.Objects;
 
+@RequiredArgsConstructor
 public class MissingPrimaryException extends RuntimeException {
     private final String type;
 

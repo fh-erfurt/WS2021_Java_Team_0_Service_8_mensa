@@ -1,10 +1,13 @@
-package de.fherfurt.mensa.core;
+package de.fherfurt.mensa.core.persistence;
 
 import de.fherfurt.mensa.core.persistence.errors.MissingPrimaryException;
 import de.fherfurt.mensa.core.persistence.errors.PersistenceException;
 import de.fherfurt.mensa.core.persistence.errors.ToManyPrimaryKeysException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -20,15 +23,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Database {
 
     private static Database instance;
 
     private final Map<String, CollectionContainer> cache = new ConcurrentHashMap<>();
     private final Map<String, Set<MapperContainer>> mappers = new ConcurrentHashMap<>();
-
-    private Database() {
-    }
 
     public static Database newInstance() {
         if (Objects.isNull(instance)) {
@@ -49,6 +50,8 @@ public class Database {
 
                 primaryKey.setAccessible(true);
                 primaryKey.set(entity, target.count.incrementAndGet());
+            } else {
+                target.entries.remove(entity);
             }
 
             target.entries.add(entity);
@@ -87,7 +90,7 @@ public class Database {
 
     public <T> Optional<T> findBy(final Class<T> type, final int id) {
         return Optional.ofNullable(cache.get(type.getSimpleName()))
-                .flatMap(target -> target.entries.stream().filter(entity -> Objects.equals(extractPrimaryKeyValue(entity), id))
+                .flatMap(target -> target.entries.stream().filter(entity -> extractPrimaryKeyValue(entity) == id)
                         .map(type::cast)
                         .findFirst());
     }
@@ -115,9 +118,7 @@ public class Database {
     }
 
     private Field extractPrimaryKeyField(Object entity) {
-        final List<Field> primaryKeys = Arrays.stream(entity.getClass().getFields()).filter(field -> field.isAnnotationPresent(Id.class)).collect(Collectors.toList());
-        Arrays.stream(entity.getClass().getDeclaredFields()).filter(field -> field.isAnnotationPresent(Id.class)).forEach(primaryKeys::add);
-
+        final List<Field> primaryKeys = getAllFields(entity.getClass(), field -> field.isAnnotationPresent(Id.class));
         if (primaryKeys.isEmpty()) {
             throw MissingPrimaryException.of(entity.getClass());
         }
@@ -127,6 +128,18 @@ public class Database {
         }
 
         return primaryKeys.get(0);
+    }
+
+    private List<Field> getAllFields(final Class<?> clazz, Predicate<Field> filter) {
+        if (Objects.isNull(clazz)) {
+            return Collections.emptyList();
+        }
+
+        List<Field> result = new ArrayList<>(getAllFields(clazz.getSuperclass(), filter));
+        List<Field> filteredFields = Arrays.stream(clazz.getDeclaredFields())
+                .filter(filter).toList();
+        result.addAll(filteredFields);
+        return result;
     }
 
     public void clear() {

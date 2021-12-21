@@ -1,4 +1,4 @@
-package de.fherfurt.mensa.core;
+package de.fherfurt.mensa.core.persistence;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

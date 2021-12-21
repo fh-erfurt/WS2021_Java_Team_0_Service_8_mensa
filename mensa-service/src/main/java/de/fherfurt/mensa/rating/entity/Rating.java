@@ -3,6 +3,7 @@ package de.fherfurt.mensa.rating.entity;
 import de.fherfurt.mensa.core.persistence.BaseBusinessEntity;
 import de.fherfurt.persons.client.transfer.objects.MensaPerson;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 public class Rating extends BaseBusinessEntity {
 
     private MensaPerson evaluator;

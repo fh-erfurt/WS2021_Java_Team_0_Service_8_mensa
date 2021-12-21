@@ -1,6 +1,6 @@
 package de.fherfurt.mensa.rating.entity;
 
-import de.fherfurt.mensa.core.Database;
+import de.fherfurt.mensa.core.persistence.Database;
 import de.fherfurt.mensa.core.persistence.Repository;
 import de.fherfurt.mensa.core.persistence.errors.NoResultException;
 import de.fherfurt.mensa.core.persistence.errors.ToManyResultsException;
@@ -16,7 +16,12 @@ public class RatingRepository implements Repository<Rating> {
 
     private final Database database = Database.newInstance();
 
-    void init() {
+    /**
+     * In that stage (Java 1 without persistence) the simulation of cascaded operations is required. For that,
+     * the adding of mappers is done in that helper method. After introducing a data base, this method and its
+     * containing logic should be removed.
+     */
+    private void init() {
         database.addInsertMapper(Rating.class, (db, entity) -> entity.getImages().forEach(db::save));
         database.addDeleteMapper(Rating.class, (db, entity) -> entity.getImages().forEach(db::delete));
     }
@@ -28,12 +33,12 @@ public class RatingRepository implements Repository<Rating> {
     }
 
     @Override
-    public void save(Rating entity) {
+    public void save(final Rating entity) {
         database.save(entity);
     }
 
     @Override
-    public Optional<Rating> findBy(int id) {
+    public Optional<Rating> findBy(final int id) {
         return database.findBy(Rating.class, id);
     }
 
@@ -41,18 +46,18 @@ public class RatingRepository implements Repository<Rating> {
         List<Image> images = database.findBy(Image.class, image -> Objects.equals(image.getId(), imageId));
 
         if (images.isEmpty()) {
-            throw new NoResultException("Could not found image with id " + imageId);
+            throw new NoResultException("Could not found image with id [" + imageId + "]");
         }
 
         if (images.size() > 1) {
-            throw new ToManyResultsException("No unique result found for id " + imageId);
+            throw new ToManyResultsException("No unique result found for id [" + imageId + "]");
         }
 
         return images.get(0);
     }
 
     @Override
-    public void delete(Rating entity) {
+    public void delete(final Rating entity) {
         database.delete(entity);
     }
 }

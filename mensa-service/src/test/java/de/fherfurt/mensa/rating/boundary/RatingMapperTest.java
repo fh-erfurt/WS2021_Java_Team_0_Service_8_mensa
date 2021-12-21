@@ -8,10 +8,21 @@ import de.fherfurt.mensa.rating.entity.Rating;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static de.fherfurt.mensa.TestTags.BOUNDARY;
+import static de.fherfurt.mensa.TestTags.DOMAIN;
+import static de.fherfurt.mensa.TestTags.UNIT;
+
+@Tags({
+        @Tag(UNIT),
+        @Tag(DOMAIN),
+        @Tag(BOUNDARY)
+})
 class RatingMapperTest {
 
     private SoftAssertions softly;

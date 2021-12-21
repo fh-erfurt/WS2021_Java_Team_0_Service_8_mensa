@@ -10,13 +10,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Image extends BaseBusinessEntity {
-    private String title;
-    private String type;
+    private String name;
+    private String suffix;
 
     @Builder(setterPrefix = "with")
-    public Image(int id, String title, String type) {
+    public Image(int id, String name, String suffix) {
         super(id);
-        this.title = title;
-        this.type = type;
+        this.name = name;
+        this.suffix = suffix;
     }
 }

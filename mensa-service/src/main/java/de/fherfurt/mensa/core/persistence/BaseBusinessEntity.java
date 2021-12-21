@@ -1,7 +1,7 @@
 package de.fherfurt.mensa.core.persistence;
 
-import de.fherfurt.mensa.core.Id;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,8 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class BaseBusinessEntity {
 
+    @EqualsAndHashCode.Include
     @Id
     private int id;
 }

@@ -9,11 +9,9 @@ import de.fherfurt.mensa.rating.boundary.transfer.objects.RatingDto;
 import de.fherfurt.mensa.rating.entity.Image;
 import de.fherfurt.mensa.rating.entity.Rating;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Utils class with methods and data that are required to work with bean mapper. Instances of mappers have to registered
@@ -37,13 +35,6 @@ public class BeanMapperUtils {
                 .findFirst()
                 .map(mapper -> (BeanMapper<E, D>) mapper.getV3())
                 .orElseThrow(() -> new NullPointerException("Could not find mapper for DTO type '" + type.getSimpleName() + "'."));
-    }
-
-    public static <S, T> List<T> mapNestedCollection(final List<S> sources, final Class<T> targetType, final Function<S, T> mapperFunction) {
-        if (Objects.isNull(sources) || sources.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return sources.stream().map(mapperFunction).map(targetType::cast).collect(Collectors.toList());
     }
 
     /**

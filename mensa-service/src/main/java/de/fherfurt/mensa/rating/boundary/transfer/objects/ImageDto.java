@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder(setterPrefix = "with")
 public class ImageDto {
     private int id;
-    private String title;
-    private String type;
+    private String name;
+    private String suffix;
     private byte[] content;
 }
