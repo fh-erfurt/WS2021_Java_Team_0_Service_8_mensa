@@ -1,7 +1,7 @@
 package de.fherfurt.mensa.rating.boundary;
 
+import de.fherfurt.mensa.client.objects.ImageDto;
 import de.fherfurt.mensa.core.mappers.BeanMapper;
-import de.fherfurt.mensa.rating.boundary.transfer.objects.ImageDto;
 import de.fherfurt.mensa.rating.entity.Image;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;

@@ -1,7 +1,7 @@
 package de.fherfurt.mensa.rating.entity;
 
 import de.fherfurt.mensa.core.errors.ConsumerWithException;
-import de.fherfurt.mensa.rating.entity.FileRepository.FileTypes;
+import de.fherfurt.mensa.rating.entity.FileSystemRepository.FileTypes;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -40,7 +40,7 @@ class FileRepositoryTest {
             // GIVEN
             filesMock.when(() -> Files.exists(Mockito.any(Path.class))).thenReturn(false);
 
-            final FileRepository repository = FileRepository.of();
+            final FileSystemRepository repository = FileSystemRepository.of();
 
             final FileTypes type = FileTypes.IMAGE;
             final String fileName = "test.jpg";
@@ -61,7 +61,7 @@ class FileRepositoryTest {
             // GIVEN
             filesMock.when(() -> Files.exists(Mockito.any(Path.class))).thenReturn(true);
 
-            final FileRepository repository = FileRepository.of();
+            final FileSystemRepository repository = FileSystemRepository.of();
 
             final FileTypes type = FileTypes.IMAGE;
             final String fileName = "test.jpg";
@@ -84,7 +84,7 @@ class FileRepositoryTest {
             // GIVEN
             filesMock.when(() -> Files.exists(Mockito.any(Path.class))).thenReturn(false);
 
-            final FileRepository repository = FileRepository.of();
+            final FileSystemRepository repository = FileSystemRepository.of();
 
             final FileTypes type = FileTypes.IMAGE;
             final String fileName = "test.jpg";
@@ -108,7 +108,7 @@ class FileRepositoryTest {
             // GIVEN
             filesMock.when(() -> Files.notExists(Mockito.any(Path.class))).thenReturn(true);
 
-            final FileRepository repository = FileRepository.of();
+            final FileSystemRepository repository = FileSystemRepository.of();
 
             final FileTypes type = FileTypes.IMAGE;
             final String fileName = "test.jpg";
@@ -126,7 +126,7 @@ class FileRepositoryTest {
     void shouldCallDeleteIfFileExists() {
         prepareTest(ConsumerWithException.wrap(filesMock -> {
             // GIVEN
-            final FileRepository repository = FileRepository.of();
+            final FileSystemRepository repository = FileSystemRepository.of();
 
             final FileTypes type = FileTypes.IMAGE;
             final String fileName = "test.jpg";
@@ -146,7 +146,7 @@ class FileRepositoryTest {
             // GIVEN
             filesMock.when(() -> Files.notExists(Mockito.any(Path.class))).thenReturn(true);
 
-            final FileRepository repository = FileRepository.of();
+            final FileSystemRepository repository = FileSystemRepository.of();
 
             final FileTypes type = FileTypes.IMAGE;
             final String fileName = "test.jpg";

@@ -11,6 +11,7 @@ import org.mapstruct.InheritInverseConfiguration;
  *
  * @param <E> Generic type of entity
  * @param <D> Generic type of DTO
+ * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
 public interface BeanMapper<E extends BaseBusinessEntity, D> {
 
@@ -30,6 +31,22 @@ public interface BeanMapper<E extends BaseBusinessEntity, D> {
      */
     @InheritInverseConfiguration
     E fromDto(final D dto);
+
+    /**
+     * Deeply clones the entity.
+     *
+     * @param toClone Entity to clone
+     * @return Cloned entity
+     */
+    E clone(E toClone);
+
+    /**
+     * Deeply clones the DTO.
+     *
+     * @param toClone DTO to clone
+     * @return Cloned DTO
+     */
+    D clone(D toClone);
 
     @Ignore
     static <E extends BaseBusinessEntity, D> D mapToDto(final E entity) {

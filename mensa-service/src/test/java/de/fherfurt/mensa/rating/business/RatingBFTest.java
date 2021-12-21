@@ -1,10 +1,13 @@
 package de.fherfurt.mensa.rating.business;
 
 import de.fherfurt.mensa.core.errors.BiConsumerWithException;
-import de.fherfurt.mensa.rating.entity.FileRepository.FileTypes;
+import de.fherfurt.mensa.rating.business.errors.UserNotFoundException;
+import de.fherfurt.mensa.rating.entity.FileSystemRepository.FileTypes;
 import de.fherfurt.mensa.rating.entity.Image;
 import de.fherfurt.mensa.rating.entity.Rating;
 import de.fherfurt.mensa.rating.entity.RatingRepository;
+import de.fherfurt.persons.client.PersonsService;
+import de.fherfurt.persons.client.transfer.objects.MensaPerson;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -38,15 +41,22 @@ class RatingBFTest {
     @Mock
     FilesBF filesBF;
 
+    @Mock
+    PersonsService personsService;
+
+    private static final String USER_ALIAS = "User1";
+
     @Test
     void shouldCallSaveOnRatingRepository() {
         prepareTest((ratingRepoMock, filesBfMock) -> {
             // GIVEN
-            RatingBF facade = RatingBF.of();
+            RatingBF facade = RatingBF.of(personsService);
             final Rating entity = Rating.builder().build();
 
+            Mockito.when(personsService.findBy(USER_ALIAS)).thenReturn(Optional.of(new MensaPerson(1, USER_ALIAS, "")));
+
             // WHEN
-            facade.save(entity);
+            facade.save(entity, USER_ALIAS);
 
             // THEN
             Mockito.verify(ratingRepository, Mockito.times(1)).save(entity);
@@ -54,10 +64,28 @@ class RatingBFTest {
     }
 
     @Test
+    void shouldNotCallSaveOnRepositoryAndThrowExceptioIfUserIsNotFound() {
+        prepareTest((ratingRepoMock, filesBfMock) -> {
+            // GIVEN
+            RatingBF facade = RatingBF.of(personsService);
+            final Rating entity = Rating.builder().build();
+
+            // WHEN
+            Throwable result = Assertions.catchThrowable(() -> facade.save(entity, "User99"));
+
+            // THEN
+            Mockito.verify(ratingRepository, Mockito.never()).save(entity);
+            Assertions.assertThat(result)
+                    .isInstanceOf(UserNotFoundException.class)
+                    .returns("No user found for alias 'User99'", Throwable::getLocalizedMessage);
+        });
+    }
+
+    @Test
     void shouldCallSaveOnImageBf() {
         prepareTest(BiConsumerWithException.wrap((ratingRepoMock, filesBfMock) -> {
             // GIVEN
-            RatingBF facade = RatingBF.of();
+            RatingBF facade = RatingBF.of(personsService);
             final Image entity = Image.builder().withName("test").withSuffix("jpg").build();
             final byte[] content = "content".getBytes();
             final boolean newImage = true;
@@ -75,7 +103,7 @@ class RatingBFTest {
     void shouldLoadImageIfNoExceptionCauses() {
         prepareTest(BiConsumerWithException.wrap((ratingRepoMock, filesBfMock) -> {
             // GIVEN
-            RatingBF facade = RatingBF.of();
+            RatingBF facade = RatingBF.of(personsService);
 
             final int id = 1;
             final Image entity = Image.builder().withId(id).withName("test").withSuffix("jpg").build();
@@ -98,7 +126,7 @@ class RatingBFTest {
     void shouldLoadNoImageIfAnExceptionCauses() {
         prepareTest(BiConsumerWithException.wrap((ratingRepoMock, filesBfMock) -> {
             // GIVEN
-            RatingBF facade = RatingBF.of();
+            RatingBF facade = RatingBF.of(personsService);
 
             final int id = 1;
             final Image entity = Image.builder().withId(id).withName("test").withSuffix("jpg").build();
@@ -121,7 +149,7 @@ class RatingBFTest {
     void shouldNotCallDeleteIfRatingDoesNotExist() {
         prepareTest((ratingRepoMock, filesBfMock) -> {
             // GIVEN
-            RatingBF facade = RatingBF.of();
+            RatingBF facade = RatingBF.of(personsService);
 
             final int id = 1;
 
@@ -139,7 +167,7 @@ class RatingBFTest {
     void shouldCallDeleteIfRatingDoesExist() {
         prepareTest(BiConsumerWithException.wrap((ratingRepoMock, filesBfMock) -> {
             // GIVEN
-            RatingBF facade = RatingBF.of();
+            RatingBF facade = RatingBF.of(personsService);
 
             final int id = 1;
             final Rating entity = Rating.builder()
@@ -162,6 +190,7 @@ class RatingBFTest {
     }
 
     private void prepareTest(BiConsumer<MockedStatic<RatingRepository>, MockedStatic<FilesBF>> testCase) {
+
         try (MockedStatic<RatingRepository> ratingRepo = Mockito.mockStatic(RatingRepository.class)) {
             // GIVEN
             ratingRepo.when(RatingRepository::of).thenReturn(ratingRepository);

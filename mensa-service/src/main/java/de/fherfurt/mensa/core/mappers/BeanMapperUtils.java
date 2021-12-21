@@ -1,12 +1,15 @@
 package de.fherfurt.mensa.core.mappers;
 
+import de.fherfurt.mensa.client.objects.ImageDto;
+import de.fherfurt.mensa.client.objects.PersonDto;
+import de.fherfurt.mensa.client.objects.RatingDto;
 import de.fherfurt.mensa.core.containers.Tuple3;
 import de.fherfurt.mensa.core.persistence.BaseBusinessEntity;
 import de.fherfurt.mensa.rating.boundary.ImageMapper;
+import de.fherfurt.mensa.rating.boundary.PersonMapper;
 import de.fherfurt.mensa.rating.boundary.RatingMapper;
-import de.fherfurt.mensa.rating.boundary.transfer.objects.ImageDto;
-import de.fherfurt.mensa.rating.boundary.transfer.objects.RatingDto;
 import de.fherfurt.mensa.rating.entity.Image;
+import de.fherfurt.mensa.rating.entity.Person;
 import de.fherfurt.mensa.rating.entity.Rating;
 
 import java.util.List;
@@ -50,6 +53,11 @@ public class BeanMapperUtils {
                     .withV1(Image.class)
                     .withV2(ImageDto.class)
                     .withV3(ImageMapper.INSTANCE)
+                    .build(),
+            Tuple3.<Class<?>, Class<?>, BeanMapper<?, ?>>builder()
+                    .withV1(Person.class)
+                    .withV2(PersonDto.class)
+                    .withV3(PersonMapper.INSTANCE)
                     .build()
     );
 }

@@ -14,14 +14,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Image extends BaseBusinessEntity {
-    private String name;
-    private String suffix;
+public class Person extends BaseBusinessEntity {
+    private int id;
+    private String alias;
+    private String imageUrl;
 
     @Builder(setterPrefix = "with")
-    public Image(int id, String name, String suffix) {
+    public Person(int id, String alias, String imageUrl) {
         super(id);
-        this.name = name;
-        this.suffix = suffix;
+        this.alias = alias;
+        this.imageUrl = imageUrl;
     }
 }

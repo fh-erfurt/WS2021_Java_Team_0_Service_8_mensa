@@ -1,22 +1,33 @@
 package de.fherfurt.mensa.rating.business;
 
 import de.fherfurt.mensa.core.errors.ConsumerWithException;
-import de.fherfurt.mensa.rating.entity.FileRepository.FileTypes;
+import de.fherfurt.mensa.rating.boundary.PersonMapper;
+import de.fherfurt.mensa.rating.business.errors.UserNotFoundException;
+import de.fherfurt.mensa.rating.entity.FileSystemRepository.FileTypes;
 import de.fherfurt.mensa.rating.entity.Image;
+import de.fherfurt.mensa.rating.entity.Person;
 import de.fherfurt.mensa.rating.entity.Rating;
 import de.fherfurt.mensa.rating.entity.RatingRepository;
-import lombok.NoArgsConstructor;
+import de.fherfurt.persons.client.PersonsService;
+import de.fherfurt.persons.client.transfer.objects.MensaPerson;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.Optional;
 
-@NoArgsConstructor(staticName = "of")
+@RequiredArgsConstructor(staticName = "of")
 public class RatingBF {
 
     private final RatingRepository ratingRepository = RatingRepository.of();
     private final FilesBF filesBF = FilesBF.of();
+    private final PersonsService personsService;
 
-    public void save(final Rating rating) {
+    public void save(final Rating rating, final String userAlias) {
+        final MensaPerson loaded = personsService.findBy(userAlias).orElseThrow(() -> new UserNotFoundException(userAlias));
+        final Person mapped = PersonMapper.INSTANCE.fromMensaPerson(loaded);
+
+        rating.setEvaluator(mapped);
+
         ratingRepository.save(rating);
     }
 

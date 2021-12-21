@@ -4,6 +4,7 @@ import de.fherfurt.persons.client.transfer.objects.MensaPerson;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class DevPersonsService implements PersonsService {
@@ -18,5 +19,10 @@ public class DevPersonsService implements PersonsService {
     @Override
     public Optional<MensaPerson> findBy(int id) {
         return Optional.ofNullable(persons.get(id));
+    }
+
+    @Override
+    public Optional<MensaPerson> findBy(final String alias) {
+        return persons.stream().filter(user -> Objects.equals(user.getAlias(), alias)).findFirst();
     }
 }

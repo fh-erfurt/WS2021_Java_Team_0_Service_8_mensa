@@ -1,8 +1,8 @@
 package de.fherfurt.mensa.rating.boundary;
 
+import de.fherfurt.mensa.client.objects.ImageDto;
+import de.fherfurt.mensa.client.objects.RatingDto;
 import de.fherfurt.mensa.core.mappers.BeanMapper;
-import de.fherfurt.mensa.rating.boundary.transfer.objects.ImageDto;
-import de.fherfurt.mensa.rating.boundary.transfer.objects.RatingDto;
 import de.fherfurt.mensa.rating.entity.Image;
 import de.fherfurt.mensa.rating.entity.Rating;
 import org.assertj.core.api.SoftAssertions;

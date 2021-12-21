@@ -1,8 +1,8 @@
 package de.fherfurt.mensa.rating.boundary;
 
-import de.fherfurt.mensa.rating.boundary.transfer.objects.ImageDto;
-import de.fherfurt.mensa.rating.boundary.transfer.objects.RatingDto;
-import de.fherfurt.mensa.rating.entity.FileRepository;
+import de.fherfurt.mensa.client.objects.ImageDto;
+import de.fherfurt.mensa.client.objects.RatingDto;
+import de.fherfurt.mensa.rating.entity.FileSystemRepository;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
@@ -33,9 +33,11 @@ class RatingResourceTest {
 
     private static final byte[] content = loadImage("demo-1.jpg");
 
+    private static final String USER_ALIAS = "user1";
+
     @BeforeAll
     static void beforeAll() throws IOException {
-        Path homeDir = Paths.get(FileRepository.BASE_DIR, "mensa");
+        Path homeDir = Paths.get(FileSystemRepository.BASE_DIR, "mensa");
         if (Files.notExists(homeDir)) {
             return;
         }
@@ -61,7 +63,7 @@ class RatingResourceTest {
         final RatingResource resource = RatingResource.of();
 
         // WHEN
-        final int result = resource.save(rating);
+        final int result = resource.save(rating, USER_ALIAS);
 
         // THEN
         Assertions.assertThat(result).isGreaterThanOrEqualTo(1);
@@ -83,7 +85,7 @@ class RatingResourceTest {
                 .build();
 
         final RatingResource resource = RatingResource.of();
-        final int id = resource.save(rating);
+        final int id = resource.save(rating, USER_ALIAS);
         final RatingDto refreshed = resource.findBy(id)
                 .orElseThrow(() -> new NullPointerException("Expected refreshed rating not found"));
         refreshed.setRating(3);
@@ -96,7 +98,7 @@ class RatingResourceTest {
                 .build());
 
         // WHEN
-        final int result = resource.save(refreshed);
+        final int result = resource.save(refreshed, USER_ALIAS);
 
         // THEN
         Assertions.assertThat(result).isGreaterThanOrEqualTo(1);
@@ -123,7 +125,7 @@ class RatingResourceTest {
                 .build();
 
         final RatingResource resource = RatingResource.of();
-        final int id = resource.save(rating);
+        final int id = resource.save(rating, USER_ALIAS);
 
         // WHEN
         final Optional<RatingDto> refreshed = resource.findBy(id);
@@ -152,7 +154,7 @@ class RatingResourceTest {
                 .build();
 
         final RatingResource resource = RatingResource.of();
-        resource.save(rating);
+        resource.save(rating, USER_ALIAS);
 
         // WHEN
         final Optional<RatingDto> result = resource.findBy(9999);
@@ -177,7 +179,7 @@ class RatingResourceTest {
                 .build();
 
         final RatingResource resource = RatingResource.of();
-        final int id = resource.save(rating);
+        final int id = resource.save(rating, USER_ALIAS);
 
         // WHEN
         final List<ImageDto> result = resource.loadImagesBy(id);

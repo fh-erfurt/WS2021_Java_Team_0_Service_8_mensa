@@ -1,7 +1,7 @@
 package de.fherfurt.mensa.rating.business;
 
 import de.fherfurt.mensa.core.errors.ConsumerWithException;
-import de.fherfurt.mensa.rating.entity.FileRepository;
+import de.fherfurt.mensa.rating.entity.FileSystemRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 import static de.fherfurt.mensa.TestTags.BUSINESS;
 import static de.fherfurt.mensa.TestTags.DOMAIN;
 import static de.fherfurt.mensa.TestTags.UNIT;
-import static de.fherfurt.mensa.rating.entity.FileRepository.FileTypes.IMAGE;
+import static de.fherfurt.mensa.rating.entity.FileSystemRepository.FileTypes.IMAGE;
 
 @Tags({
         @Tag(UNIT),
@@ -29,13 +29,13 @@ import static de.fherfurt.mensa.rating.entity.FileRepository.FileTypes.IMAGE;
 class FilesBFTest {
 
     @Mock
-    FileRepository repository;
+    FileSystemRepository repository;
 
     @Test
     void shouldCallRepositoryForSaveAFile() {
         prepareTest(ConsumerWithException.wrap(repoMock -> {
             // GIVEN
-            final FileRepository.FileTypes type = IMAGE;
+            final FileSystemRepository.FileTypes type = IMAGE;
             final String fileName = "test.jpg";
             final byte[] content = "content".getBytes();
             final boolean newImage = true;
@@ -54,7 +54,7 @@ class FilesBFTest {
     void shouldCallRepositoryForSaveAFileAndDeleteIfUpdate() {
         prepareTest(ConsumerWithException.wrap(repoMock -> {
             // GIVEN
-            final FileRepository.FileTypes type = IMAGE;
+            final FileSystemRepository.FileTypes type = IMAGE;
             final String fileName = "test.jpg";
             final byte[] content = "content".getBytes();
             final boolean newImage = false;
@@ -74,7 +74,7 @@ class FilesBFTest {
     void shouldCallRepositoryForFindFileByTypeAndNameAndReturnFound() {
         prepareTest(ConsumerWithException.wrap(repoMock -> {
             // GIVEN
-            final FileRepository.FileTypes type = IMAGE;
+            final FileSystemRepository.FileTypes type = IMAGE;
             final String fileName = "test.jpg";
             final byte[] content = "content".getBytes();
 
@@ -95,7 +95,7 @@ class FilesBFTest {
     void shouldCallRepositoryForFindFileByTypeAndNameAndReturnEmptyIfNotFound() {
         prepareTest(ConsumerWithException.wrap(repoMock -> {
             // GIVEN
-            final FileRepository.FileTypes type = IMAGE;
+            final FileSystemRepository.FileTypes type = IMAGE;
             final String fileName = "test.jpg";
 
             Mockito.when(repository.findBy(type, fileName)).thenReturn(Optional.empty());
@@ -115,7 +115,7 @@ class FilesBFTest {
     void shouldCallRepositoryForDeleteFileByTypeAndName() {
         prepareTest(ConsumerWithException.wrap(repoMock -> {
             // GIVEN
-            final FileRepository.FileTypes type = IMAGE;
+            final FileSystemRepository.FileTypes type = IMAGE;
             final String fileName = "test.jpg";
 
             final FilesBF facade = FilesBF.of();
@@ -128,10 +128,10 @@ class FilesBFTest {
         }));
     }
 
-    private void prepareTest(Consumer<MockedStatic<FileRepository>> testCase) {
-        try (MockedStatic<FileRepository> filesMock = Mockito.mockStatic(FileRepository.class)) {
+    private void prepareTest(Consumer<MockedStatic<FileSystemRepository>> testCase) {
+        try (MockedStatic<FileSystemRepository> filesMock = Mockito.mockStatic(FileSystemRepository.class)) {
             // GIVEN
-            filesMock.when(FileRepository::of).thenReturn(repository);
+            filesMock.when(FileSystemRepository::of).thenReturn(repository);
 
             testCase.accept(filesMock);
         }

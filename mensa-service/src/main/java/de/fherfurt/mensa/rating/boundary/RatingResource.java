@@ -1,11 +1,13 @@
 package de.fherfurt.mensa.rating.boundary;
 
+import de.fherfurt.mensa.client.RatingResourceClient;
+import de.fherfurt.mensa.client.objects.ImageDto;
+import de.fherfurt.mensa.client.objects.RatingDto;
 import de.fherfurt.mensa.core.errors.FunctionWithException;
 import de.fherfurt.mensa.core.mappers.BeanMapper;
-import de.fherfurt.mensa.rating.boundary.transfer.objects.ImageDto;
-import de.fherfurt.mensa.rating.boundary.transfer.objects.RatingDto;
 import de.fherfurt.mensa.rating.business.RatingBF;
 import de.fherfurt.mensa.rating.entity.Rating;
+import de.fherfurt.persons.client.DevPersonsService;
 import lombok.NoArgsConstructor;
 
 import java.util.Collections;
@@ -15,15 +17,28 @@ import java.util.stream.Collectors;
 
 import static de.fherfurt.mensa.core.errors.ConsumerWithException.wrap;
 
+/**
+ * This class represents the production implementation for the functionality of the rating submodule. It receives and loads
+ * all data that are required to store new ratings and provides search and load capability for external services.
+ *
+ * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
+ */
 @NoArgsConstructor(staticName = "of")
-public class RatingResource {
+public class RatingResource implements RatingResourceClient {
 
-    private final RatingBF ratingBF = RatingBF.of();
+    /**
+     * TODO: Remove {@link de.fherfurt.persons.client.DevPersonsService} before release!
+     */
+    private final RatingBF ratingBF = RatingBF.of(new DevPersonsService());
 
-    public int save(final RatingDto ratingDto) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int save(final RatingDto ratingDto, final String userAlias) {
         final Rating rating = BeanMapper.mapFromDto(ratingDto);
 
-        ratingBF.save(rating);
+        ratingBF.save(rating, userAlias);
 
         ratingDto.getImages()
                 .forEach(wrap(
@@ -33,13 +48,21 @@ public class RatingResource {
         return rating.getId();
     }
 
-    public Optional<RatingDto> findBy(int id) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<RatingDto> findBy(final int id) {
         return ratingBF.findBy(id)
                 .map(rating -> (RatingDto) BeanMapper.mapToDto(rating))
                 .or(Optional::empty);
     }
 
-    public List<ImageDto> loadImagesBy(int ratingId) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ImageDto> loadImagesBy(final int ratingId) {
         return ratingBF.findBy(ratingId)
                 .map(rating -> rating.getImages().stream()
                         .map(FunctionWithException.wrap(
@@ -55,6 +78,10 @@ public class RatingResource {
                 ).orElse(Collections.emptyList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void deleteBy(final int id) {
         ratingBF.delete(id);
     }

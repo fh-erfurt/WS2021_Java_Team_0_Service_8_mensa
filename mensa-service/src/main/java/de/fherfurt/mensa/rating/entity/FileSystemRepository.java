@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @NoArgsConstructor(staticName = "of")
-public class FileRepository {
+public class FileSystemRepository {
     public static final String BASE_DIR = System.getProperty("java.io.tmpdir");
     private final String serviceDir = "mensa";
 

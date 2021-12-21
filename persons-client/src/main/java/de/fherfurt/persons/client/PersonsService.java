@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface PersonsService {
 
     Optional<MensaPerson> findBy(int id);
+
+    Optional<MensaPerson> findBy(String alias);
 }
