@@ -15,6 +15,12 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * This business facade is used to work (means save, find and delete) {@link Rating}s. It is the main access point to the
+ * rating submodule.
+ *
+ * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
+ */
 @RequiredArgsConstructor(staticName = "of")
 public class RatingBF {
 

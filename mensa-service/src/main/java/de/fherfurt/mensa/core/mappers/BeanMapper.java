@@ -9,11 +9,11 @@ import org.mapstruct.InheritInverseConfiguration;
  * This interface represents an API definition for bean mappers and a mapper facade at the same time. An example can be found in {@link RatingMapper}.
  * The direct usage of the mapper framework isn't a good idea. Sometimes, the performance of frameworks change and the switch to another makes sense.
  *
- * @param <E> Generic type of entity
- * @param <D> Generic type of DTO
+ * @param <ENTITY> Generic type of entity
+ * @param <DTO> Generic type of DTO
  * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
-public interface BeanMapper<E extends BaseBusinessEntity, D> {
+public interface BeanMapper<ENTITY extends BaseBusinessEntity, DTO> {
 
     /**
      * Maps the given entity to its corresponding DTO.
@@ -21,7 +21,7 @@ public interface BeanMapper<E extends BaseBusinessEntity, D> {
      * @param entity Entity to map
      * @return Resulting DTO of the mapping
      */
-    D toDto(final E entity);
+    DTO toDto(final ENTITY entity);
 
     /**
      * Maps the given DTO to its underlying entity.
@@ -30,7 +30,7 @@ public interface BeanMapper<E extends BaseBusinessEntity, D> {
      * @return Resulting entity of the DTO
      */
     @InheritInverseConfiguration
-    E fromDto(final D dto);
+    ENTITY fromDto(final DTO dto);
 
     /**
      * Deeply clones the entity.
@@ -38,7 +38,7 @@ public interface BeanMapper<E extends BaseBusinessEntity, D> {
      * @param toClone Entity to clone
      * @return Cloned entity
      */
-    E clone(E toClone);
+    ENTITY clone(ENTITY toClone);
 
     /**
      * Deeply clones the DTO.
@@ -46,17 +46,17 @@ public interface BeanMapper<E extends BaseBusinessEntity, D> {
      * @param toClone DTO to clone
      * @return Cloned DTO
      */
-    D clone(D toClone);
+    DTO clone(DTO toClone);
 
     @Ignore
-    static <E extends BaseBusinessEntity, D> D mapToDto(final E entity) {
-        final BeanMapper<E, D> beanMapper = BeanMapperUtils.getMapperBy(entity.getClass(), Tuple3::getV1);
+    static <ENTITY extends BaseBusinessEntity, DTO> DTO mapToDto(final ENTITY entity) {
+        final BeanMapper<ENTITY, DTO> beanMapper = BeanMapperUtils.getMapperBy(entity.getClass(), Tuple3::getV1);
         return beanMapper.toDto(entity);
     }
 
     @Ignore
-    static <E extends BaseBusinessEntity, D> E mapFromDto(final D dto) {
-        final BeanMapper<E, D> beanMapper = BeanMapperUtils.getMapperBy(dto.getClass(), Tuple3::getV2);
+    static <ENTITY extends BaseBusinessEntity, DTO> ENTITY mapFromDto(final DTO dto) {
+        final BeanMapper<ENTITY, DTO> beanMapper = BeanMapperUtils.getMapperBy(dto.getClass(), Tuple3::getV2);
         return beanMapper.fromDto(dto);
     }
 }

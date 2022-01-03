@@ -39,7 +39,7 @@ public class Database {
         return instance;
     }
 
-    public <T> void save(final T entity) {
+    public <ENTITY> void save(final ENTITY entity) {
         try {
             final CollectionContainer target = Optional.ofNullable(cache.get(entity.getClass().getSimpleName())).orElse(CollectionContainer.of());
 
