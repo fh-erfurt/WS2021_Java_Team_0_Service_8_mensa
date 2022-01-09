@@ -1,6 +1,6 @@
 package de.fherfurt.mensa.core.persistence;
 
-import de.fherfurt.mensa.core.persistence.errors.MissingPrimaryException;
+import de.fherfurt.mensa.core.persistence.errors.MissingPrimaryKeyException;
 import de.fherfurt.mensa.core.persistence.errors.PersistenceException;
 import de.fherfurt.mensa.core.persistence.errors.ToManyPrimaryKeysException;
 import lombok.AccessLevel;
@@ -120,7 +120,7 @@ public class Database {
     private Field extractPrimaryKeyField(Object entity) {
         final List<Field> primaryKeys = getAllFields(entity.getClass(), field -> field.isAnnotationPresent(Id.class));
         if (primaryKeys.isEmpty()) {
-            throw MissingPrimaryException.of(entity.getClass());
+            throw MissingPrimaryKeyException.of(entity.getClass());
         }
 
         if (primaryKeys.size() > 1) {

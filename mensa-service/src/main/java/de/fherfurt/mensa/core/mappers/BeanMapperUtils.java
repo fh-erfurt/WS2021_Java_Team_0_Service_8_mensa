@@ -19,6 +19,8 @@ import java.util.function.Function;
 /**
  * Utils class with methods and data that are required to work with bean mapper. Instances of mappers have to registered
  * in the MAPPERS list of that class.
+ *
+ * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
 public class BeanMapperUtils {
     /**

@@ -7,6 +7,7 @@ import java.util.Optional;
  * defined and implemented in the explicit repository.
  *
  * @param <ENTITY> Generic type of entity
+ * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
 public interface Repository<ENTITY extends BaseBusinessEntity> {
 

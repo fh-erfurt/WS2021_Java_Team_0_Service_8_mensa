@@ -3,6 +3,8 @@ package de.fherfurt.mensa.rating.business.errors;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * Thrown if no user was found. The users are requested on the <i>Persons Service</i>.
+ *
  * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
 public class UserNotFoundException extends RuntimeException {

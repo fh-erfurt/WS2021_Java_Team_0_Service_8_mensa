@@ -1,6 +1,6 @@
 package de.fherfurt.mensa.core.persistence;
 
-import de.fherfurt.mensa.core.persistence.errors.MissingPrimaryException;
+import de.fherfurt.mensa.core.persistence.errors.MissingPrimaryKeyException;
 import de.fherfurt.mensa.core.persistence.errors.ToManyPrimaryKeysException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,7 +41,7 @@ class DatabaseTest {
         final Throwable result = Assertions.catchThrowable(() -> database.save(entity));
 
         // THEN
-        Assertions.assertThat(result).isInstanceOf(MissingPrimaryException.class);
+        Assertions.assertThat(result).isInstanceOf(MissingPrimaryKeyException.class);
         Assertions.assertThat(result.getLocalizedMessage())
                 .isEqualTo("Could not find a primary key on type 'TestEntityWithoutPK'.");
     }

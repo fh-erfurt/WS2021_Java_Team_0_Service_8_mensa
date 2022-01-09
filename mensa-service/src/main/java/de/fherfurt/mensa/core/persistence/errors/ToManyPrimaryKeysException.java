@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 
+/**
+ * Thrown if an entity has multiple fields that are annotated with{@link de.fherfurt.mensa.core.persistence.Id}.
+ *
+ * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
+ */
 @RequiredArgsConstructor
 public class ToManyPrimaryKeysException extends RuntimeException {
     private final String type;

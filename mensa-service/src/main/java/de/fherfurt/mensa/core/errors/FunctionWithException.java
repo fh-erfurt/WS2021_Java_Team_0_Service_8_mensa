@@ -5,8 +5,8 @@ import java.util.function.Function;
 /**
  * This functional interface is used to wrap {@link java.util.function.Function} calls that throws checked exceptions.
  *
- * @param <PARAM> Generic type of the parameter
- * @param <RESULT> Generic type of the returned result
+ * @param <PARAM>     Generic type of the parameter
+ * @param <RESULT>    Generic type of the returned result
  * @param <EXCEPTION> Generic exception type
  * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */

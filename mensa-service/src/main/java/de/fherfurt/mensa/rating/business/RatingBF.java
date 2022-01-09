@@ -28,11 +28,21 @@ public class RatingBF {
     private final FilesBF filesBF = FilesBF.of();
     private final PersonsService personsService;
 
+    /**
+     * Persists or updates a given rating from a given user. Internally, the loading of the user's data will be performed and stored (for historical/consistency reasons) if the ratings is new.
+     *
+     * @param rating    The rating that has to be stored/updated
+     * @param userAlias The alias of the user that creates the rating
+     */
     public void save(final Rating rating, final String userAlias) {
-        final MensaPerson loaded = personsService.findBy(userAlias).orElseThrow(() -> new UserNotFoundException(userAlias));
-        final Person mapped = PersonMapper.INSTANCE.fromMensaPerson(loaded);
+        final boolean newRating = rating.getId() < 1;
 
-        rating.setEvaluator(mapped);
+        if (newRating) {
+            final MensaPerson loaded = personsService.findBy(userAlias).orElseThrow(() -> new UserNotFoundException(userAlias));
+            final Person mapped = PersonMapper.INSTANCE.fromMensaPerson(loaded);
+
+            rating.setEvaluator(mapped);
+        }
 
         ratingRepository.save(rating);
     }
@@ -41,6 +51,13 @@ public class RatingBF {
         return ratingRepository.findBy(id);
     }
 
+    /**
+     * Persists or updates a given image. The file will be replaced, if already existing.
+     *
+     * @param image   The image to store/update
+     * @param content The content of the image
+     * @throws IOException Thrown if an error occurs while writing the file to the file system
+     */
     public void saveImage(final Image image, byte[] content) throws IOException {
         final boolean newImage = image.getId() < 1;
         filesBF.save(FileTypes.IMAGE, convert(image), content, newImage);
