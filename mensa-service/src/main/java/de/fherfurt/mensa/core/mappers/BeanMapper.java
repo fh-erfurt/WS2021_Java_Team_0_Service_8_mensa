@@ -1,6 +1,6 @@
 package de.fherfurt.mensa.core.mappers;
 
-import de.fherfurt.mensa.core.containers.Tuple3;
+import de.fherfurt.mensa.core.mappers.BeanMapperUtils.MapperTargets;
 import de.fherfurt.mensa.core.persistence.BaseBusinessEntity;
 import de.fherfurt.mensa.rating.boundary.RatingMapper;
 import org.mapstruct.InheritInverseConfiguration;
@@ -10,7 +10,7 @@ import org.mapstruct.InheritInverseConfiguration;
  * The direct usage of the mapper framework isn't a good idea. Sometimes, the performance of frameworks change and the switch to another makes sense.
  *
  * @param <ENTITY> Generic type of entity
- * @param <DTO> Generic type of DTO
+ * @param <DTO>    Generic type of DTO
  * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
 public interface BeanMapper<ENTITY extends BaseBusinessEntity, DTO> {
@@ -50,13 +50,13 @@ public interface BeanMapper<ENTITY extends BaseBusinessEntity, DTO> {
 
     @Ignore
     static <ENTITY extends BaseBusinessEntity, DTO> DTO mapToDto(final ENTITY entity) {
-        final BeanMapper<ENTITY, DTO> beanMapper = BeanMapperUtils.getMapperBy(entity.getClass(), Tuple3::getV1);
+        final BeanMapper<ENTITY, DTO> beanMapper = BeanMapperUtils.getMapperBy(entity.getClass(), MapperTargets.ENTITY);
         return beanMapper.toDto(entity);
     }
 
     @Ignore
     static <ENTITY extends BaseBusinessEntity, DTO> ENTITY mapFromDto(final DTO dto) {
-        final BeanMapper<ENTITY, DTO> beanMapper = BeanMapperUtils.getMapperBy(dto.getClass(), Tuple3::getV2);
+        final BeanMapper<ENTITY, DTO> beanMapper = BeanMapperUtils.getMapperBy(dto.getClass(), MapperTargets.DTO);
         return beanMapper.fromDto(dto);
     }
 }

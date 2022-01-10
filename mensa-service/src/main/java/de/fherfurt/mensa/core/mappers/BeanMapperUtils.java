@@ -23,23 +23,26 @@ import java.util.function.Function;
  * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
 public class BeanMapperUtils {
+
     /**
      * Searches a mapper instance by the given type and the Tuple3 supplier. The mappers must be pre-defined in the list of that utils class.
      * If no mapper is available for the type, an exception will be thrown.
      *
-     * @param type         Type of the object
-     * @param typeSupplier The supplier of the tuple, that is used to get the comparison value from the map entries.
-     * @param <E>          Generic type of the entity
-     * @param <D>          Generic type of the DTO
+     * @param type   Type of the object
+     * @param target Target to find the right mapper
+     * @param <E>    Generic type of the entity
+     * @param <D>    Generic type of the DTO
      * @return Instance of the mapper. Otherwise, an exception will be thrown.
      */
     @SuppressWarnings("unchecked")
-    static <E extends BaseBusinessEntity, D> BeanMapper<E, D> getMapperBy(Class<?> type, final Function<Tuple3<Class<?>, Class<?>, ? extends BeanMapper<?, ?>>, Class<?>> typeSupplier) {
+    static <E extends BaseBusinessEntity, D> BeanMapper<E, D> getMapperBy(final Class<?> type, final MapperTargets target) {
+        final Function<Tuple3<Class<?>, Class<?>, ? extends BeanMapper<?, ?>>, Class<?>> typeSupplier = MapperTargets.ENTITY.equals(target) ? Tuple3::getV1 : Tuple3::getV2;
+
         return MAPPERS.stream()
                 .filter(mapper -> Objects.equals(type, typeSupplier.apply(mapper)))
                 .findFirst()
                 .map(mapper -> (BeanMapper<E, D>) mapper.getV3())
-                .orElseThrow(() -> new NullPointerException("Could not find mapper for DTO type '" + type.getSimpleName() + "'."));
+                .orElseThrow(() -> new NullPointerException("Could not find mapper for " + target.name().toLowerCase() + " type '" + type.getSimpleName() + "'."));
     }
 
     /**
@@ -62,4 +65,11 @@ public class BeanMapperUtils {
                     .withV3(PersonMapper.INSTANCE)
                     .build()
     );
+
+    /**
+     * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
+     */
+    enum MapperTargets {
+        ENTITY, DTO
+    }
 }
