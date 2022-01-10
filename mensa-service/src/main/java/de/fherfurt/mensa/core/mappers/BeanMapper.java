@@ -10,7 +10,7 @@ import org.mapstruct.InheritInverseConfiguration;
  * The direct usage of the mapper framework isn't a good idea. Sometimes, the performance of frameworks change and the switch to another makes sense.
  *
  * @param <ENTITY> Generic type of entity
- * @param <DTO>    Generic type of DTO
+ * @param <DTO> Generic type of DTO
  * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
 public interface BeanMapper<ENTITY extends BaseBusinessEntity, DTO> {
