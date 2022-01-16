@@ -11,6 +11,7 @@ import de.fherfurt.mensa.rating.entity.RatingRepository;
 import de.fherfurt.persons.client.PersonsService;
 import de.fherfurt.persons.client.transfer.objects.MensaPerson;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import java.util.Optional;
  *
  * @author Michael Rhoese <michael.rhoese@fh-erfurt.de>
  */
+@Slf4j
 @RequiredArgsConstructor(staticName = "of")
 public class RatingBF {
 
@@ -69,6 +71,7 @@ public class RatingBF {
         try {
             return filesBF.findBy(FileTypes.IMAGE, convert(image));
         } catch (IOException e) {
+            LOGGER.error("Could not find image for ID '" + imageId + "'", e);
             return Optional.empty();
         }
     }

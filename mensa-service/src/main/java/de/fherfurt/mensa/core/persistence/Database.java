@@ -64,7 +64,7 @@ public class Database {
         }
     }
 
-    public <T> void delete(final T entity) {
+    public <ENTITY> void delete(final ENTITY entity) {
         final CollectionContainer target = Optional.ofNullable(cache.get(entity.getClass().getSimpleName())).orElse(CollectionContainer.of());
 
         target.entries.remove(entity);
